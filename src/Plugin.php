@@ -20,6 +20,7 @@ class Plugin implements PluginInterface , EventSubscriberInterface {
 	private Composer $composer;
 	private IOInterface $io;
 	private ? string $path = null;
+	protected bool $setuped = false;
 
 	public function activate(Composer $composer,IOInterface $io) : void {
 		$this->composer = $composer;
@@ -40,8 +41,13 @@ class Plugin implements PluginInterface , EventSubscriberInterface {
 	}
 	public function onPostAutoloadDump(Event $event) : void {
 		if(is_null($this->path) === false){
-			$this->io->write('<info>Setup...</info>');
-			setup($this->path);
+			if($this->setuped === false){
+				$this->io->write('<info>Setup...</info>');
+				setup($this->path);
+				$this->setuped = true;
+			} else {
+				$this->io->write('<comment>Already setuped !</comment>');
+			}
 		} else {
 			$this->io->write('<error>Package path `taknone/liveproto` not found</error>');
 		}
