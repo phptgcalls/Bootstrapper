@@ -90,7 +90,7 @@ abstract class Generator {
 				$params = $method['params'];
 				$return = $method['type'];
 				$params = array_reduce($params,function($carry,$item) : array {
-					$item['type'] = Tl::parseType($item['type']); 
+					$item['type'] = Tl::parseType($item['type']);
 					$carry []= $item;
 					return $carry;
 				},array());
@@ -166,7 +166,7 @@ abstract class Generator {
 				$params = $constructor['params'];
 				$return = $constructor['type'];
 				$params = array_reduce($params,function($carry,$item) : array {
-					$item['type'] = Tl::parseType($item['type']); 
+					$item['type'] = Tl::parseType($item['type']);
 					$carry []= $item;
 					return $carry;
 				},array());
@@ -232,7 +232,7 @@ abstract class Generator {
 		$all->writeNewLine(PHP_TAG_END);
 		$all->close();
 	}
-	static private function writeRequest($stream,$params,$name,$type) : void {
+	static private function writeRequest(Builder $stream,array $params,string $name,array $type) : void {
 		if($type['is_flag']):
 			if($type['type'] != 'true'):
 				$stream->writeNewLine('if(is_null('.chr(36).$name.') === false):');
@@ -283,7 +283,7 @@ abstract class Generator {
 			endif;
 		endif;
 	}
-	static private function writeResponse($stream,$params,$name,$type) : void {
+	static private function writeResponse(Builder $stream,array $params,string $name,array $type) : void {
 		if($type['is_flag']):
 			$stream->writeNewLine('if($flags'.($type['flag_number'] === 1 ? null : $type['flag_number']).' & (1 << '.$type['flag_index'].')):');
 			$stream->addIndent();
@@ -350,7 +350,7 @@ abstract class Generator {
 	static public function start(mixed ...$tls) : void {
 		$tls = array_filter($tls,fn(mixed $tl) : bool => is_string($tl) and isFile($tl));
 		if(empty($tls)):
-			$tls = array(PATH.DIRECTORY_SEPARATOR.'api.tl',PATH.DIRECTORY_SEPARATOR.'mtproto.tl',PATH.DIRECTORY_SEPARATOR.'secret.tl');
+			$tls = array(__DIR__.DIRECTORY_SEPARATOR.'api.tl',__DIR__.DIRECTORY_SEPARATOR.'mtproto.tl',__DIR__.DIRECTORY_SEPARATOR.'secret.tl');
 		endif;
 		foreach($tls as $index => $tl):
 			$type = mime_content_type($tl);
